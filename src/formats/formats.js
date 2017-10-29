@@ -1,3 +1,4 @@
+import { partial } from 'lodash';
 import yamlFormatter from './yaml';
 import tomlFormatter from './toml';
 import jsonFormatter from './json';
@@ -44,16 +45,20 @@ function formatByName(name) {
 }
 
 export function resolveFormat(collectionOrEntity, entry) {
-  // If the format is specified in the collection, use that format.
   const format = collectionOrEntity.get('format');
-  if (format) {
-    return formatByName(format);
-  }
-
-  // If a file already exists, infer the format from its file extension.
   const filePath = entry && entry.path;
-  if (filePath) {
+
+  let formatter;
+  if (format) {
+    // If the format is specified in the collection, use that format.
+    formatter = formatByName(format);
+  } else if (filePath) {
+    // If a file already exists, infer the format from its file extension.
     const fileExtension = filePath.split('.').pop();
-    return formatByExtension(fileExtension);
+    formatter = formatByExtension(fileExtension);
   }
+  return {
+    fromFile: partial(formatter.fromFile, collectionOrEntity),
+    toFile: partial(formatter.toFile, collectionOrEntity),
+  };
 }

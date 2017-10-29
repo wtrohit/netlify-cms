@@ -134,7 +134,7 @@ const name = folder.split('/').filter(s => s).pop();
 const extension = Object.keys(extensions).sort((a, b) => extensions[b] - extensions[a])[0];
 const format = formatByExtension(extension);
 const entries = files.filter(name => name.split(".").pop() === extension).slice(0, 100).map(file => (
-  format.fromFile(fs.readFileSync(path.join(folder, file), { encoding: 'utf8' }))
+  format.fromFile(null, fs.readFileSync(path.join(folder, file), { encoding: 'utf8' }))
 ));
 const fields = inferFields(entries);
 

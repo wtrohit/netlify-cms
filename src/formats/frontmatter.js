@@ -4,7 +4,7 @@ import yamlFormatter from './yaml';
 import jsonFormatter from './json';
 
 const parsers = {
-  toml: input => tomlFormatter.fromFile(input),
+  toml: input => tomlFormatter.fromFile(null, input),
   json: input => {
     let JSONinput = input.trim();
     // Fix JSON if leading and trailing brackets were trimmed.
@@ -14,11 +14,11 @@ const parsers = {
     if (JSONinput.substr(-1) !== '}') {
       JSONinput = JSONinput + '}';
     }
-    return jsonFormatter.fromFile(JSONinput);
+    return jsonFormatter.fromFile(null, JSONinput);
   },
   yaml: {
-    parse: input => yamlFormatter.fromFile(input),
-    stringify: (metadata, { sortedKeys }) => yamlFormatter.toFile(metadata, sortedKeys),
+    parse: input => yamlFormatter.fromFile(null, input),
+    stringify: (metadata, { sortedKeys }) => yamlFormatter.toFile(null, metadata, sortedKeys),
   },
 }
 
@@ -41,7 +41,7 @@ function inferFrontmatterFormat(str) {
 }
 
 export default {
-  fromFile(content) {
+  fromFile(collectionOrEntity, content) {
     const result = matter(content, { engines: parsers, ...inferFrontmatterFormat(content) });
     return {
       ...result.data,
@@ -49,7 +49,7 @@ export default {
     };
   },
 
-  toFile(data, sortedKeys) {
+  toFile(collectionOrEntity, data, sortedKeys) {
     const { body = '', ...meta } = data;
 
     // always stringify to YAML
