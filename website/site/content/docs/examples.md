@@ -5,7 +5,7 @@ position: 110
 
 # Examples
 
-Do you have a great example? Submit a pull request to this page.
+Do you have a great example? Submit a pull request to this page & check. 
 
 Name | Tools | Type | Example | More info |
 --- | --- | --- | --- | ---
